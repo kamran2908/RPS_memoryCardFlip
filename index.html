@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Duel: Strategy Edition</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+    <div class="scoreboard">
+        <div class="p1-color">Player 1: <span id="p1-match-score">0</span></div>
+        <div class="p2-color">Player 2: <span id="p2-match-score">0</span></div>
+    </div>
+
+    <!-- Round 1 -->
+    <div id="round1" class="game-container">
+        <h2>Round 1: Rock Paper Scissors</h2>
+        <p id="rps-status">Player 1, make your move!</p>
+        <div class="choices">
+            <button onclick="handleRPS('🪨')">🪨</button>
+            <button onclick="handleRPS('📄')">📄</button>
+            <button onclick="handleRPS('✂️')">✂️</button>
+        </div>
+        <button class="reset-btn" onclick="fullReset()">Restart Entire Game</button>
+    </div>
+
+    <!-- Round 2 -->
+    <div id="round2" class="game-container hidden">
+        <h2>Round 2: Memory Shot</h2>
+        <p id="memory-status"></p>
+        <div id="grid" class="memory-grid"></div>
+    </div>
+
+
+</body>
+
+</html>
