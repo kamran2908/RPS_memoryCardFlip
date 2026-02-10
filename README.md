@@ -4,7 +4,7 @@ A detailed explanation about what this repository is about <br>
 
 This is basically a game which has two round where a player who wins both the round gets a point<br>
 round 1: <br>
-this round is Rock-Paper-Scissors which is quite familiar to all
+this round is Tic-Tac-Toe which is quite familiar to all
 the player who wins in round 1 (does not score a point) goes to round 2
 <br>
 round 2:<br>

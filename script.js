@@ -1,62 +1,88 @@
 let scores = { p1: 0, p2: 0 };
-let p1Choice = null, p2Choice = null;
+let tttBoard = Array(9).fill(null);
+let currentPlayer = 'X'; // X is P1, O is P2
 let round1Winner = "";
 let flippedCards = [];
+let matchedIndices = [];
 
-// This array stays consistent until a full reset
-let masterSymbols = ['🍎', '🍎', '💎', '💎', '⭐', '⭐', '🍀', '🍀', '🔥', '🔥', '🌈', '🌈', '👻', '👻', '🤖', '🤖'];
-let matchedIndices = []; // Track which cards are already removed from play
+const masterSymbols = ['🍎', '🍎', '💎', '💎', '⭐', '⭐', '🍀', '🍀', '🔥', '🔥', '🌈', '🌈', '👻', '👻', '🤖', '🤖'];
 
-// Initial Shuffle
-shuffleSymbols();
-
+// --- INITIALIZATION ---
 function shuffleSymbols() {
     masterSymbols.sort(() => Math.random() - 0.5);
     matchedIndices = [];
 }
 
 function fullReset() {
-    if (confirm("Reset everything? This will reshuffle the cards and clear points.")) {
-        scores = { p1: 0, p2: 0 };
-        document.getElementById('p1-match-score').innerText = "0";
-        document.getElementById('p2-match-score').innerText = "0";
-        shuffleSymbols();
-        p1Choice = p2Choice = null;
-        document.getElementById('rps-status').innerText = "Player 1, make your move!";
+    if (confirm("Restart game and scores?")) {
+        location.reload();
     }
 }
 
-// --- ROUND 1 ---
-function handleRPS(choice) {
-    const status = document.getElementById('rps-status');
-    if (!p1Choice) {
-        p1Choice = choice;
-        status.innerText = "Player 2, choose!";
-    } else {
-        p2Choice = choice;
-        const rules = { '🪨': '✂️', '📄': '🪨', '✂️': '📄' };
-        if (p1Choice === p2Choice) {
-            status.innerText = "Tie! Try again Player 1.";
-            p1Choice = p2Choice = null;
-        } else {
-            round1Winner = (rules[p1Choice] === p2Choice) ? "p1" : "p2";
-            alert(`${round1Winner === 'p1' ? 'Player 1' : 'Player 2'} wins!`);
+// --- ROUND 1: TIC TAC TOE ---
+function initTTT() {
+    const board = document.getElementById('ttt-board');
+    board.innerHTML = '';
+    tttBoard.forEach((cell, i) => {
+        const div = document.createElement('div');
+        div.className = 'ttt-cell';
+        div.innerText = cell || '';
+        if (cell === 'X') div.style.color = 'var(--p1)';
+        if (cell === 'O') div.style.color = 'var(--p2)';
+        div.onclick = () => handleTTTMove(i);
+        board.appendChild(div);
+    });
+    updateTurnUI();
+}
+
+function updateTurnUI() {
+    document.getElementById('score-p1').classList.toggle('active', currentPlayer === 'X');
+    document.getElementById('score-p2').classList.toggle('active', currentPlayer === 'O');
+    document.getElementById('ttt-status').innerText = `Player ${currentPlayer === 'X' ? '1' : '2'}'s Turn (${currentPlayer})`;
+}
+
+function handleTTTMove(i) {
+    if (tttBoard[i]) return;
+    tttBoard[i] = currentPlayer;
+    initTTT();
+
+    if (checkTTTWin()) {
+        round1Winner = (currentPlayer === 'X') ? 'p1' : 'p2';
+        setTimeout(() => {
+            alert(`Player ${currentPlayer === 'X' ? '1' : '2'} wins Tic-Tac-Toe!`);
             startRound2();
-        }
+        }, 100);
+    } else if (!tttBoard.includes(null)) {
+        alert("It's a draw! Resetting Tic-Tac-Toe board...");
+        tttBoard.fill(null);
+        initTTT();
+    } else {
+        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+        updateTurnUI();
     }
 }
 
-// --- ROUND 2 ---
+function checkTTTWin() {
+    const wins = [
+        [0,1,2], [3,4,5], [6,7,8], // Rows
+        [0,3,6], [1,4,7], [2,5,8], // Cols
+        [0,4,8], [2,4,6]             // Diags
+    ];
+    return wins.some(pattern => {
+        return pattern.every(idx => tttBoard[idx] === currentPlayer);
+    });
+}
+
+// --- ROUND 2: MEMORY ---
 function startRound2() {
     document.getElementById('round1').classList.add('hidden');
     document.getElementById('round2').classList.remove('hidden');
-    document.getElementById('memory-status').innerText = `${round1Winner === 'p1' ? 'Player 1' : 'Player 2'}'s turn`;
+    document.getElementById('memory-status').innerText = `Player ${round1Winner === 'p1' ? '1' : '2'}, find a match!`;
 
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
     flippedCards = [];
 
-    // Rebuild the grid using the SAME masterSymbols array
     masterSymbols.forEach((s, index) => {
         const card = document.createElement('div');
         card.classList.add('memory-card');
@@ -64,13 +90,11 @@ function startRound2() {
         card.dataset.index = index;
         card.innerText = s;
 
-        // If this card was matched in a previous round, keep it visible/green
         if (matchedIndices.includes(index)) {
             card.classList.add('matched');
         } else {
             card.onclick = () => flipCard(card);
         }
-
         grid.appendChild(card);
     });
 }
@@ -91,30 +115,35 @@ function evaluateMemory() {
         matchedIndices.push(parseInt(c1.dataset.index), parseInt(c2.dataset.index));
         scores[round1Winner]++;
         document.getElementById(`${round1Winner}-match-score`).innerText = scores[round1Winner];
-        alert("CORRECT! +1 Point.");
+        alert("MATCH! Point awarded.");
     } else {
         c1.classList.add('failed');
         c2.classList.add('failed');
-        alert("WRONG! No point.");
+        alert("NO MATCH!");
     }
 
-    // If all cards matched, reshuffle for the next set of points
     if (matchedIndices.length === masterSymbols.length) {
-        alert("All cards found! Reshuffling board...");
+        alert("Board cleared! Reshuffling for next round.");
         shuffleSymbols();
     }
-
-    nextRound();
+    
+    checkMatchEnd();
 }
 
-function nextRound() {
+function checkMatchEnd() {
     if (scores.p1 >= 5 || scores.p2 >= 5) {
-        alert(`GAME OVER! ${scores.p1 >= 5 ? 'Player 1' : 'Player 2'} wins the whole match!`);
+        alert(`GAME OVER! Player ${scores.p1 >= 5 ? '1' : '2'} wins the match!`);
         location.reload();
     } else {
-        p1Choice = p2Choice = null;
+        // Reset Round 1
+        tttBoard.fill(null);
+        currentPlayer = 'X';
         document.getElementById('round2').classList.add('hidden');
         document.getElementById('round1').classList.remove('hidden');
-        document.getElementById('rps-status').innerText = "Player 1, make your move!";
+        initTTT();
     }
 }
+
+// Start
+shuffleSymbols();
+initTTT();
