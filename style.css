@@ -4,6 +4,8 @@
     --card-back: #34495e;
     --p1: #e74c3c;
     --p2: #3498db;
+    --highlight: #f1c40f;
+    --success: #2ecc71;
 }
 
 body {
@@ -17,7 +19,6 @@ body {
     padding: 20px;
 }
 
-/* Scoreboard & Turn Indicator */
 .scoreboard {
     display: flex;
     gap: 20px;
@@ -38,14 +39,19 @@ body {
 .player-score.active {
     opacity: 1;
     background: #fdfdfd;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transform: scale(1.05);
 }
 
-.p1-color { color: var(--p1); font-weight: bold; }
-.p2-color { color: var(--p2); font-weight: bold; }
+.p1-color {
+    color: var(--p1);
+    font-weight: bold;
+}
 
-.hidden { display: none !important; }
+.p2-color {
+    color: var(--p2);
+    font-weight: bold;
+}
 
 .game-container {
     background: white;
@@ -54,35 +60,36 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
 }
 
-/* Tic Tac Toe Grid */
-.ttt-grid {
+.matrix-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     margin: 20px 0;
-    background: #eee;
-    padding: 8px;
-    border-radius: 10px;
 }
 
-.ttt-cell {
+.matrix-cell {
     aspect-ratio: 1;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
+    background: #ecf0f1;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.ttt-cell:hover { background: #fcfcfc; }
+.matrix-cell.highlight {
+    background: var(--highlight) !important;
+}
 
-/* Memory Grid */
+.matrix-cell.correct {
+    background: var(--success) !important;
+}
+
+.matrix-cell.wrong {
+    background: var(--p1) !important;
+}
+
 .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -101,12 +108,22 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     border-radius: 8px;
-    transition: transform 0.4s;
 }
 
-.memory-card.flipped { background: var(--primary); color: white; transform: rotateY(180deg); }
-.memory-card.matched { background: #2ecc71 !important; color: white !important; pointer-events: none; }
-.memory-card.failed { background: var(--p1); color: white; }
+.memory-card.flipped {
+    background: var(--primary);
+    color: white;
+}
+
+.memory-card.matched {
+    background: var(--success) !important;
+    color: white !important;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none !important;
+}
 
 .reset-btn {
     margin-top: 15px;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,27 +8,27 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script defer src="script.js"></script>
 </head>
+
 <body>
 
     <div class="scoreboard">
-        <div id="score-p1" class="player-score p1-color active">Player 1: <span id="p1-match-score">0</span> (X)</div>
-        <div id="score-p2" class="player-score p2-color">Player 2: <span id="p2-match-score">0</span> (O)</div>
+        <div id="score-p1" class="player-score p1-color active">P1: <span id="p1-match-score">0</span></div>
+        <div id="score-p2" class="player-score p2-color">P2: <span id="p2-match-score">0</span></div>
     </div>
 
-    <!-- Round 1: Tic-Tac-Toe -->
     <div id="round1" class="game-container">
-        <h2>Round 1: Tic-Tac-Toe</h2>
-        <p id="ttt-status">Player 1's Turn (X)</p>
-        <div id="ttt-board" class="ttt-grid"></div>
-        <button class="reset-btn" onclick="fullReset()">Restart Entire Game</button>
+        <h2>Round 1: 5x5 Matrix</h2>
+        <p id="matrix-status">Get ready...</p>
+        <div id="matrix-board" class="matrix-grid"></div>
+        <button class="reset-btn" onclick="location.reload()">Reset Game</button>
     </div>
 
-    <!-- Round 2: Memory -->
     <div id="round2" class="game-container hidden">
-        <h2>Round 2: Memory Shot</h2>
+        <h2>Round 2: Find a Pair</h2>
         <p id="memory-status"></p>
-        <div id="grid" class="memory-grid"></div>
+        <div id="memory-grid" class="memory-grid"></div>
     </div>
 
 </body>
+
 </html>
